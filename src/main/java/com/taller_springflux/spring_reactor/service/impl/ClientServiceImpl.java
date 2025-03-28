@@ -6,6 +6,7 @@ import com.taller_springflux.spring_reactor.repository.GenericRepository;
 import com.taller_springflux.spring_reactor.service.ClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
@@ -13,9 +14,13 @@ public class ClientServiceImpl extends GenericCrudImpl<Client, String> implement
 
     private final ClientRepository clientRepository;
 
-
     @Override
     protected GenericRepository<Client, String> getRepository() {
         return clientRepository;
+    }
+
+    @Override
+    public Mono<Client> findByName(String string) {
+        return clientRepository.findByFirstName(string);
     }
 }

@@ -5,9 +5,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface ClientService extends GenericCrud<Client, String>{
-    /*Mono<Client> save(Client client);
-    Mono<Client> update(String id, Client client);
-    Flux<Client> findAll();
-    Mono<Client> findById(String id);
-    Mono<Boolean> delete(String id);*/
+
+    Mono<Client> findByName(String string);
 }

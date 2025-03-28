@@ -39,6 +39,15 @@ public class ClientController {
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/data/{name}")
+    public Mono<ResponseEntity<Client>> findByName(@PathVariable("name") String name) {
+        return clientService.findByName(name)
+                .map(e -> ResponseEntity.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(e))
+                .defaultIfEmpty(ResponseEntity.notFound().build());
+    }
+
     @PostMapping
     public Mono<ResponseEntity<EntityModel<Client>>> save(@RequestBody Client client,
                                                           ServerWebExchange serverWebExchange) {
