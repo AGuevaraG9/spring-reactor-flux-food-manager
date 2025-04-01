@@ -3,6 +3,7 @@ package com.taller_springflux.spring_reactor.controller;
 import com.taller_springflux.spring_reactor.dto.DishDTO;
 import com.taller_springflux.spring_reactor.model.Dish;
 import com.taller_springflux.spring_reactor.service.DishService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.MediaType;
@@ -44,7 +45,7 @@ public class DishController {
     }
 
     @PostMapping
-    public Mono<ResponseEntity<DishDTO>> save(@RequestBody DishDTO dishDTO, final ServerHttpRequest request) {
+    public Mono<ResponseEntity<DishDTO>> save(@Valid @RequestBody DishDTO dishDTO, final ServerHttpRequest request) {
         return dishService.save(convertToDocument(dishDTO))
                 .map(this::convertToDto)
                 .map(e -> ResponseEntity.created(
