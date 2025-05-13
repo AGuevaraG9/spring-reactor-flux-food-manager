@@ -143,6 +143,28 @@ public class ClientController {
                 });
     }
 
+    @PostMapping("/uploadV2/{id}")
+    public Mono<ResponseEntity<ClientDTO>> uploadV2(@PathVariable("id") String id,
+                                                    @RequestPart("file") FilePart filePart){
+        return Mono.fromCallable(() -> Files.createTempFile("temp", filePart.filename()).toFile())
+                .flatMap(tempfile -> filePart.transferTo(tempfile)
+                        .then(clientService.findById(id))
+                        .flatMap(client -> Mono.fromCallable(() -> {
+                            Map<String, Object> response = cloudinary.uploader().upload(tempfile, ObjectUtils.asMap("resource_type", "auto"));
+                            JSONObject jsonResponse = new JSONObject(response);
+                            String url = jsonResponse.getString("url");
+                            client.setUrlPhoto(url);
+
+                            return clientService.update(id, client)
+                                    .map(this::convertToDto)
+                                    .map(e -> ResponseEntity.ok().body(e));
+                        }).flatMap(mono -> mono)
+                                //Mono<Mono<T>> ==> Mono<T>
+                        )
+                );
+                
+    }
+
     private ClientDTO convertToDto(Client model) {
         return modelMapper.map(model, ClientDTO.class);
     }
